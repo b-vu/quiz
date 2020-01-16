@@ -16,8 +16,8 @@ function startGame(){
         display.textContent = questions[questionNumber].title;
         for(i = 0; i < questions[questionNumber].choices.length; i++){
             var choice = document.createElement("button");
-            choice.setAttribute("class", "row row-cols-1");
-            choice.setAttribute("style", "width:150px; margin:auto; margin-top:20px");
+            choice.setAttribute("class", "btn btn-primary col");
+            choice.setAttribute("style", "margin-top:20px; font-size:25px");
             choice.addEventListener("click", getAnswer);
             choice.textContent = questions[questionNumber].choices[i];
             display.appendChild(choice);
@@ -50,9 +50,11 @@ function setTimer(){
             display.textContent = "You are done! Your final score is " + time.textContent + ".";
             var input = document.createElement("input");
             var submitButton = document.createElement("button");
+            submitButton.setAttribute("class", "btn btn-primary row-cols-1");
             submitButton.textContent = "Submit";
             submitButton.addEventListener("click", storeScore);
             var goBackButton = document.createElement("button");
+            goBackButton.setAttribute("class", "btn btn-primary row-cols-1");
             goBackButton.textContent = "Go Back";
             goBackButton.setAttribute("style", "margin-right:20px");
             goBackButton.addEventListener("click", goBack);
@@ -90,12 +92,48 @@ function storeScore(){
     result.setAttribute("style", "font-size:24px");
     display.textContent = "";
     scoreButton.textContent = "";
-    result.textContent = numScores + 1 + " " + userNames[numScores] + " " + userScores[numScores];
+    var goBackButton = document.createElement("button");
+    goBackButton.setAttribute("class", "btn btn-primary row-cols-1");
+    goBackButton.textContent = "Go Back";
+    goBackButton.addEventListener("click", goBack);
+    scoreButton.appendChild(goBackButton);
+    result.textContent = "Your initials and score: " + userNames[numScores] + " " + userScores[numScores];
     numScores++;
 };
 
 function goBack(){
-    window.location.href="index.html";
+    //window.location.href="index.html";
+    questionNumber = 0;
+    timer = questions.length * 15;
+    result.textContent = "";
+    scoreButton.textContent = "";
+    time.textContent = "75";
+
+    var h1 = document.createElement("h1");
+    h1.textContent = "Welcome to my Formula 1 quiz!";
+    display.appendChild(h1);
+
+    var h2 = document.createElement("h2");
+    h2.textContent = "Press the 'Start Quiz' button to begin";
+    display.appendChild(h2);
+
+    var br = document.createElement("br");
+    display.appendChild(br);
+
+    var h4 = document.createElement("h4");
+    h4.textContent = "You will have 75 seconds to complete this quiz. Your score is calculated by your remaining time. Every incorrect answer will subtract 10 seconds from your remaining time.";
+    display.appendChild(h4);
+
+    var br1 = document.createElement("br");
+    display.appendChild(br1);
+
+    var startButton = document.createElement("button");
+    startButton.setAttribute("class", "btn btn-primary");
+    startButton.textContent = "Start Quiz";
+    startButton.addEventListener("click", setTimer);
+    display.appendChild(startButton);
+
+    console.log(userNames, userScores);
 }
 
 startQuiz.addEventListener("click", setTimer);
@@ -105,13 +143,15 @@ score.addEventListener("click", function(){
     display.textContent = "";
     scoreButton.textContent = "";
     result.textContent = "";
-    for(i = 0; i < numScores; i++){
-        var getScore = document.createElement("p");
-        getScore.textContent = i + 1 + " " + userNames[numScores - 1] + " " + userScores[numScores - 1];
-        result.appendChild(getScore);
-    };
     var goBackButton = document.createElement("button");
+    goBackButton.setAttribute("class", "btn btn-primary row-cols-1");
     goBackButton.textContent = "Go Back";
     goBackButton.addEventListener("click", goBack);
     scoreButton.appendChild(goBackButton);
+    for(i = 0; i < numScores; i++){
+        var getScore = document.createElement("p");
+        getScore.textContent = i + 1 + ". " + userNames[i] + " " + userScores[i];
+        result.appendChild(getScore);
+        console.log(userNames[i], userScores[i]);
+    };
 });
