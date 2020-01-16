@@ -95,7 +95,7 @@ function storeScore(){
 };
 
 function goBack(){
-    
+    window.location.href="index.html";
 }
 
 startQuiz.addEventListener("click", setTimer);
@@ -110,4 +110,8 @@ score.addEventListener("click", function(){
         getScore.textContent = i + 1 + " " + userNames[numScores - 1] + " " + userScores[numScores - 1];
         result.appendChild(getScore);
     };
+    var goBackButton = document.createElement("button");
+    goBackButton.textContent = "Go Back";
+    goBackButton.addEventListener("click", goBack);
+    scoreButton.appendChild(goBackButton);
 });
