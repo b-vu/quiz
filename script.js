@@ -7,9 +7,10 @@ var scoreButton = document.querySelector("#submitScore");
 
 var timer = questions.length * 15;
 var questionNumber = 0;
-var numScores = 0;
-var userNames = [];
-var userScores = [];
+var scoreHistory = JSON.parse(localStorage.getItem("scoreHistory"));
+if(scoreHistory === null){
+    scoreHistory = [];
+};
 
 function startGame(){
     if(questionNumber < questions.length){
@@ -61,7 +62,7 @@ function setTimer(){
             input.setAttribute("style", "width:150px; font-size:20px");
             input.setAttribute("id", "initials");
             result.setAttribute("style", "font-size:24px");
-            result.textContent = "Enter your initials: ";
+            result.textContent = "Enter your initials (3 characters): ";
             result.appendChild(input);
             scoreButton.appendChild(goBackButton);
             scoreButton.appendChild(submitButton);
@@ -76,18 +77,19 @@ function setTimer(){
 
 function storeScore(){
     var userTime = time.textContent;
-    var userInitials = document.querySelector("#initials").value;
-    userNames.push(userInitials);
-    userScores.push(userTime);
+    var userInitials = document.querySelector("#initials").value.trim().toUpperCase();
+    if(userInitials === "" || userInitials.length !== 3){
+        //do nothing until initials are entered and is 3 characters
+    }
+    else{
+    scoreHistory.push({
+        initials: userInitials,
+        score: userTime
+    });
 
-    localStorage.setItem("initials", JSON.stringify(userNames));
-    localStorage.setItem("score", JSON.stringify(userScores));
-    var userNamesParse = JSON.parse(localStorage.getItem("initials"));
-    var userScoresParse = JSON.parse(localStorage.getItem("score"));
-    console.log(userNamesParse, userScoresParse);
-    console.log(userNames, userScores);
-    console.log(userNames[numScores], userScores[numScores]);
-    console.log(userNamesParse[numScores], userScoresParse[numScores]);
+    localStorage.setItem("scoreHistory", JSON.stringify(scoreHistory));
+    var scoreHistoryParse = JSON.parse(localStorage.getItem("scoreHistory"));
+    var numScores = scoreHistoryParse.length - 1;
 
     result.setAttribute("style", "font-size:24px");
     display.textContent = "";
@@ -97,50 +99,19 @@ function storeScore(){
     goBackButton.textContent = "Go Back";
     goBackButton.addEventListener("click", goBack);
     scoreButton.appendChild(goBackButton);
-    result.textContent = "Your initials and score: " + userNames[numScores] + " " + userScores[numScores];
-    numScores++;
+    result.textContent = "Your initials and score: " + scoreHistoryParse[numScores].initials + " - " + scoreHistoryParse[numScores].score;
+    }
 };
 
 function goBack(){
-    //window.location.href="index.html";
-    questionNumber = 0;
-    timer = questions.length * 15;
-    result.textContent = "";
-    scoreButton.textContent = "";
-    time.textContent = "75";
-
-    var h1 = document.createElement("h1");
-    h1.textContent = "Welcome to my Formula 1 quiz!";
-    display.appendChild(h1);
-
-    var h2 = document.createElement("h2");
-    h2.textContent = "Press the 'Start Quiz' button to begin";
-    display.appendChild(h2);
-
-    var br = document.createElement("br");
-    display.appendChild(br);
-
-    var h4 = document.createElement("h4");
-    h4.textContent = "You will have 75 seconds to complete this quiz. Your score is calculated by your remaining time. Every incorrect answer will subtract 10 seconds from your remaining time.";
-    display.appendChild(h4);
-
-    var br1 = document.createElement("br");
-    display.appendChild(br1);
-
-    var startButton = document.createElement("button");
-    startButton.setAttribute("class", "btn btn-primary");
-    startButton.textContent = "Start Quiz";
-    startButton.addEventListener("click", setTimer);
-    display.appendChild(startButton);
-
-    console.log(userNames, userScores);
+    window.location.href="index.html";
 }
 
 startQuiz.addEventListener("click", setTimer);
 
 score.addEventListener("click", function(){
     result.setAttribute("style", "font-size:24px");
-    display.textContent = "";
+    display.textContent = "High scores";
     scoreButton.textContent = "";
     result.textContent = "";
     var goBackButton = document.createElement("button");
@@ -148,10 +119,13 @@ score.addEventListener("click", function(){
     goBackButton.textContent = "Go Back";
     goBackButton.addEventListener("click", goBack);
     scoreButton.appendChild(goBackButton);
-    for(i = 0; i < numScores; i++){
+
+    var scores = JSON.parse(localStorage.getItem("scoreHistory"));
+    scores.sort(function(a, b){return b.score - a.score});
+
+    for(i = 0; i < scores.length; i++){
         var getScore = document.createElement("p");
-        getScore.textContent = i + 1 + ". " + userNames[i] + " " + userScores[i];
+        getScore.textContent = i + 1 + ". " + scores[i].initials + " - " +scores[i].score;
         result.appendChild(getScore);
-        console.log(userNames[i], userScores[i]);
     };
 });
