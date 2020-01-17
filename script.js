@@ -111,7 +111,7 @@ startQuiz.addEventListener("click", setTimer);
 
 score.addEventListener("click", function(){
     result.setAttribute("style", "font-size:24px");
-    display.textContent = "High scores";
+    display.textContent = "High Scores";
     scoreButton.textContent = "";
     result.textContent = "";
     var goBackButton = document.createElement("button");
